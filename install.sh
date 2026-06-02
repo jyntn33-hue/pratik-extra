@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Colors
 PINK='\033[1;95m'
 PURPLE='\033[1;35m'
 GREEN='\033[1;92m'
@@ -9,10 +8,12 @@ WHITE='\033[1;97m'
 RED='\033[1;91m'
 NC='\033[0m'
 
-clear
+while true
+do
+    clear
 
-echo -e "${PINK}"
-cat << "EOF"
+    echo -e "${PINK}"
+    cat << "EOF"
 
 ██████╗ ██████╗  █████╗ ████████╗██╗██╗  ██╗
 ██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██║██║ ██╔╝
@@ -23,18 +24,63 @@ cat << "EOF"
 
 EOF
 
-echo -e "${PURPLE}                    V7.0${NC}"
-echo -e "${GREEN}                PRATIK EXTRAS${NC}"
-echo -e "${PINK}════════════════════════════════════════════${NC}"
-echo ""
+    echo -e "${PURPLE}                    V7.0${NC}"
+    echo -e "${GREEN}                PRATIK EXTRAS${NC}"
+    echo -e "${PINK}════════════════════════════════════════════${NC}"
+    echo ""
 
-echo -e "${CYAN}ACCESS REQUIRED${NC}"
-echo ""
+    echo -e "${CYAN}System Information${NC}"
+    echo -e "OS      : $(grep PRETTY_NAME /etc/os-release | cut -d= -f2 | tr -d '"')"
+    echo -e "RAM     : $(free -h | awk '/Mem:/ {print $2}')"
+    echo -e "CPU     : $(nproc) Cores"
+    echo -e "User    : $(whoami)"
+    echo ""
 
-read -s -p "Enter Password: " PASS
-echo ""
+    echo -e "${WHITE}[1] Install UnOfficial Panel${NC}"
+    echo -e "${WHITE}[2] Exit${NC}"
+    echo ""
 
-if [ "$PASS" != "GT" ]; then
+    read -p "Select => " OPTION
+
+    case $OPTION in
+
+    1)
+        echo ""
+        echo -e "${CYAN}[+] Updating System...${NC}"
+        apt update -y
+
+        echo -e "${CYAN}[+] Installing Dependencies...${NC}"
+        apt install -y git nodejs npm curl wget
+
+        echo -e "${CYAN}[+] Downloading Panel...${NC}"
+
+        rm -rf crispy-adventure
+        git clone https://github.com/pratikgamer11/crispy-adventure
+
+        cd crispy-adventure || exit
+
+        echo -e "${CYAN}[+] Installing Packages...${NC}"
+        npm install express
+
+        echo -e "${GREEN}[✓] Installation Complete!${NC}"
+        echo -e "${GREEN}[✓] Starting Panel...${NC}"
+
+        node .
+        exit
+        ;;
+
+    2)
+        echo -e "${GREEN}Goodbye!${NC}"
+        exit 0
+        ;;
+
+    *)
+        echo -e "${RED}Invalid Option!${NC}"
+        sleep 1
+        ;;
+    esac
+
+doneif [ "$PASS" != "GT" ]; then
     echo -e "${RED}[✗] Wrong Password!${NC}"
     exit 1
 fi
@@ -778,4 +824,4 @@ case $option in
         echo ""
 
     
-
+;;;
