@@ -1,21 +1,19 @@
 #!/bin/bash
 
-# Color codes
-RED='\033[1;31m'
-GREEN='\033[1;32m'
-YELLOW='\033[1;33m'
-CYAN='\033[1;36m'
-MAGENTA='\033[1;35m'
-WHITE='\033[1;37m'
-BLUE='\033[1;34m'
-BOLD='\033[1m'
+# Colors
+PINK='\033[1;95m'
+PURPLE='\033[1;35m'
+GREEN='\033[1;92m'
+CYAN='\033[1;96m'
+WHITE='\033[1;97m'
+RED='\033[1;91m'
 NC='\033[0m'
 
-# Function to display banner
-show_banner() {
-    clear
-    echo -e "${MAGENTA}"
-    cat << 'EOF'
+clear
+
+echo -e "${PINK}"
+cat << "EOF"
+
 ██████╗ ██████╗  █████╗ ████████╗██╗██╗  ██╗
 ██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██║██║ ██╔╝
 ██████╔╝██████╔╝███████║   ██║   ██║█████╔╝
@@ -23,18 +21,108 @@ show_banner() {
 ██║     ██║  ██║██║  ██║   ██║   ██║██║  ██╗
 ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚═╝  ╚═╝
 
-                    V7.1
 EOF
-    echo -e "${WHITE}          PRATIK EXTRAS${NC}"
-    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}                    by Pratik${NC}"
-    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
-    echo ""
-}
 
-# Function to check if running as root
-check_root() {
-    if [ "$EUID" -ne 0 ]; then 
+echo -e "${PURPLE}                    V7.0${NC}"
+echo -e "${GREEN}                PRATIK EXTRAS${NC}"
+echo -e "${PINK}════════════════════════════════════════════${NC}"
+echo ""
+
+echo -e "${CYAN}ACCESS REQUIRED${NC}"
+echo ""
+
+read -s -p "Enter Password: " PASS
+echo ""
+
+if [ "$PASS" != "GT" ]; then
+    echo -e "${RED}[✗] Wrong Password!${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}[✓] Access Granted!${NC}"
+sleep 1
+
+while true
+do
+    clear
+
+    echo -e "${PINK}PRATIK EXTRAS V7.0${NC}"
+    echo ""
+    echo -e "${WHITE}[1] Panels${NC}"
+    echo -e "${WHITE}[2] Exit${NC}"
+    echo ""
+
+    read -p "Select => " OPTION
+
+    case $OPTION in
+
+    1)
+        clear
+
+        echo -e "${PURPLE}════════════════════════════${NC}"
+        echo -e "${GREEN}         PANELS${NC}"
+        echo -e "${PURPLE}════════════════════════════${NC}"
+        echo ""
+
+        echo "[A] UnOfficial Panel"
+        echo "[B] Pterodactyl"
+        echo "[C] Back"
+        echo ""
+
+        read -p "Select => " PANEL
+
+        case $PANEL in
+
+        A|a)
+            echo ""
+            echo -e "${CYAN}[+] Updating System...${NC}"
+            apt update -y
+
+            echo -e "${CYAN}[+] Installing Dependencies...${NC}"
+            apt install -y git nodejs npm curl wget
+
+            echo -e "${CYAN}[+] Downloading Panel...${NC}"
+
+            rm -rf crispy-adventure
+            git clone https://github.com/pratikgamer11/crispy-adventure
+
+            cd crispy-adventure || exit
+
+            npm install express
+
+            echo -e "${GREEN}[✓] Starting Panel...${NC}"
+
+            node .
+            ;;
+
+        B|b)
+            echo ""
+            echo -e "${YELLOW}Pterodactyl Section Coming Soon${NC}"
+            read -p "Press Enter..."
+            ;;
+
+        C|c)
+            ;;
+
+        *)
+            echo -e "${RED}Invalid Option!${NC}"
+            sleep 1
+            ;;
+        esac
+        ;;
+
+    2)
+        echo -e "${GREEN}Goodbye!${NC}"
+        exit 0
+        ;;
+
+    *)
+        echo -e "${RED}Invalid Option!${NC}"
+        sleep 1
+        ;;
+    esac
+
+done    if [ "$EUID" -ne 0 ]; then 
         echo -e "${RED}[✗] Please run as root (use sudo)${NC}"
         exit 1
     fi
