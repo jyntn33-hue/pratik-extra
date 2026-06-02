@@ -41,6 +41,112 @@ fi
 echo -e "${GREEN}[✓] Access Granted!${NC}"
 sleep 1
 
+while true; do
+
+clear
+
+echo -e "${MAGENTA}"
+cat << 'EOF'
+██████╗ ██████╗  █████╗ ████████╗██╗██╗  ██╗
+██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██║██║ ██╔╝
+██████╔╝██████╔╝███████║   ██║   ██║█████╔╝
+██╔═══╝ ██╔══██╗██╔══██║   ██║   ██║██╔═██╗
+██║     ██║  ██║██║  ██║   ██║   ██║██║  ██╗
+╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚═╝  ╚═╝
+
+                    V7.0
+EOF
+
+echo ""
+echo -e "${YELLOW}[1] Panels${NC}"
+echo -e "${YELLOW}[2] Exit${NC}"
+echo ""
+
+read -p "Select => " option
+
+case $option in
+
+1)
+
+    clear
+
+    echo -e "${CYAN}═══════════════════════════════${NC}"
+    echo -e "${WHITE}           PANELS${NC}"
+    echo -e "${CYAN}═══════════════════════════════${NC}"
+    echo ""
+
+    echo "[A] UnOfficial Panel"
+    echo "[B] Pterodactyl"
+    echo "[C] Back"
+    echo ""
+
+    read -p "Select => " panel
+
+    case $panel in
+
+    A|a)
+
+        echo ""
+        echo -e "${CYAN}[+] Updating System...${NC}"
+        apt update -y
+
+        echo -e "${CYAN}[+] Installing Dependencies...${NC}"
+        apt install git nodejs npm curl wget -y
+
+        echo -e "${CYAN}[+] Downloading Panel...${NC}"
+
+        if [ -d crispy-adventure ]; then
+            rm -rf crispy-adventure
+        fi
+
+        git clone https://github.com/pratikgamer11/crispy-adventure
+
+        cd crispy-adventure || exit
+
+        echo -e "${CYAN}[+] Installing Packages...${NC}"
+        npm install express
+
+        echo -e "${GREEN}[✓] Installation Complete!${NC}"
+        echo -e "${GREEN}[✓] Starting Panel...${NC}"
+
+        node .
+        ;;
+
+    B|b)
+
+        echo ""
+        echo -e "${YELLOW}[!] Pterodactyl Section Coming Soon${NC}"
+        read -p "Press Enter to continue..."
+        ;;
+
+    C|c)
+        ;;
+    
+    *)
+        echo -e "${RED}Invalid Option!${NC}"
+        sleep 1
+        ;;
+    esac
+    ;;
+
+2)
+    echo -e "${GREEN}Goodbye!${NC}"
+    exit 0
+    ;;
+
+*)
+    echo -e "${RED}Invalid Option!${NC}"
+    sleep 1
+    ;;
+esac
+
+done    echo -e "${RED}[✗] Wrong Password!${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}[✓] Access Granted!${NC}"
+sleep 1
+
 while true
 do
     clear
