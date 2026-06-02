@@ -11,12 +11,11 @@ BLUE='\033[1;34m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-# Clear screen
-clear
-
-# Banner
-echo -e "${MAGENTA}"
-cat << 'EOF'
+# Function to display banner
+show_banner() {
+    clear
+    echo -e "${MAGENTA}"
+    cat << 'EOF'
 ██████╗ ██████╗  █████╗ ████████╗██╗██╗  ██╗
 ██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██║██║ ██╔╝
 ██████╔╝██████╔╝███████║   ██║   ██║█████╔╝
@@ -24,17 +23,246 @@ cat << 'EOF'
 ██║     ██║  ██║██║  ██║   ██║   ██║██║  ██╗
 ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚═╝  ╚═╝
 
-                    V7.0
+                    V7.1
 EOF
+    echo -e "${WHITE}          PRATIK EXTRAS${NC}"
+    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}                    by Pratik${NC}"
+    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+    echo ""
+}
 
-echo -e "${WHITE}          PRATIK EXTRAS${NC}"
-echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
-echo -e "${CYAN}                    by Pratik${NC}"
-echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
-echo ""
+# Function to check if running as root
+check_root() {
+    if [ "$EUID" -ne 0 ]; then 
+        echo -e "${RED}[✗] Please run as root (use sudo)${NC}"
+        exit 1
+    fi
+}
 
+# Function to install dependencies
+install_deps() {
+    echo -e "${CYAN}[*] Checking system type...${NC}"
+    
+    if command -v apt &> /dev/null; then
+        echo -e "${GREEN}[✓] Debian/Ubuntu detected${NC}"
+        echo -e "${CYAN}[*] Updating package list...${NC}"
+        apt update -y > /dev/null 2>&1        
+        echo -e "${CYAN}[*] Installing required dependencies...${NC}"
+        apt install -y git nodejs npm curl wget build-essential > /dev/null 2>&1
+        
+        # Verify installations
+        if ! command -v node &> /dev/null; then
+            echo -e "${RED}[✗] Node.js installation failed${NC}"
+            return 1
+        fi
+        if ! command -v npm &> /dev/null; then
+            echo -e "${RED}[✗] npm installation failed${NC}"
+            return 1
+        fi
+    else
+        echo -e "${RED}[✗] Unsupported system. Only Debian/Ubuntu supported.${NC}"
+        return 1
+    fi
+    
+    echo -e "${GREEN}[✓] All dependencies installed successfully${NC}"
+    return 0
+}
+
+# Function to install unofficial panel
+install_unofficial_panel() {
+    clear
+    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+    echo -e "${WHITE}       Installing UnOfficial Panel${NC}"
+    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+    echo ""
+    
+    # Install dependencies first
+    install_deps
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}[✗] Dependency installation failed${NC}"
+        read -p "  Press Enter to continue..."
+        return
+    fi
+    
+    echo -e "${CYAN}[*] Downloading Panel from GitHub...${NC}"
+    
+    # Remove old version if exists
+    if [ -d "crispy-adventure" ]; then
+        echo -e "${YELLOW}[!] Removing old version...${NC}"
+        rm -rf crispy-adventure
+    fi
+    
+    # Clone repository
+    if git clone https://github.com/pratikgamer11/crispy-adventure 2>/dev/null; then
+        echo -e "${GREEN}[✓] Download completed${NC}"
+    else        echo -e "${RED}[✗] Failed to download panel!${NC}"
+        read -p "  Press Enter to continue..."
+        return
+    fi
+    
+    cd crispy-adventure || {
+        echo -e "${RED}[✗] Cannot access directory${NC}"
+        read -p "  Press Enter to continue..."
+        return
+    }
+    
+    echo -e "${CYAN}[*] Installing Node.js packages...${NC}"
+    if npm install express 2>/dev/null; then
+        echo -e "${GREEN}[✓] Packages installed${NC}"
+    else
+        echo -e "${RED}[✗] Package installation failed${NC}"
+        read -p "  Press Enter to continue..."
+        return
+    fi
+    
+    clear
+    echo ""
+    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+    echo -e "${GREEN}[✓] Installation Complete!${NC}"
+    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+    echo ""
+    echo -e "${GREEN}[*] Starting Panel...${NC}"
+    echo -e "${YELLOW}Press ${RED}Ctrl+C ${YELLOW}to stop the panel${NC}"
+    echo ""
+    
+    # Start node in background and capture PID
+    node . &
+    NODE_PID=$!
+    
+    echo -e "${CYAN}[*] Panel started with PID: $NODE_PID${NC}"
+    echo -e "${CYAN}[*] Waiting for panel to initialize...${NC}"
+    sleep 3
+    
+    # Return to menu instead of hanging
+    echo -e "${GREEN}[✓] Panel is running in background${NC}"
+    echo -e "${YELLOW}[!] To stop panel, use: kill $NODE_PID${NC}"
+    read -p "  Press Enter to return to menu..."
+    
+    # Optional: Kill the node process when returning to menu
+    # kill $NODE_PID 2>/dev/null
+}
+
+# Main authentication
+check_root
+show_banner
 echo -e "${CYAN}═══════════════════════════════${NC}"
 echo -e "${WHITE}       ${BOLD}ACCESS REQUIRED${NC}"
+echo -e "${CYAN}═══════════════════════════════${NC}"
+echo ""
+
+read -s -p "  Enter Password: " ACCESS_KEY
+echo ""
+
+if [ "$ACCESS_KEY" != "GT" ]; then
+    echo ""
+    echo -e "${RED}[✗] Wrong Password!${NC}"
+    echo -e "${RED}    Access Denied!${NC}"
+    sleep 1
+    exit 1
+fi
+
+echo ""
+echo -e "${GREEN}[✓] Access Granted!${NC}"
+echo -e "${GREEN}  Welcome back, Pratik!${NC}"
+sleep 1
+
+# Main menu loop
+while true; do
+    show_banner
+    
+    echo -e "  ${YELLOW}[1]${NC} ${WHITE}Panels Management${NC}"
+    echo -e "  ${YELLOW}[2]${NC} ${WHITE}System Info${NC}"
+    echo -e "  ${YELLOW}[3]${NC} ${WHITE}Exit${NC}"
+    echo ""
+    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+    echo ""
+    read -p "  Select Option => " option
+
+    case $option in
+        1)
+            clear
+            echo -e "${CYAN}═══════════════════════════════${NC}"
+            echo -e "${WHITE}           PANELS${NC}"
+            echo -e "${CYAN}═══════════════════════════════${NC}"
+            echo ""
+            echo -e "  ${YELLOW}[A]${NC} ${WHITE}UnOfficial Panel (Crispy Adventure)${NC}"
+            echo -e "  ${YELLOW}[B]${NC} ${WHITE}Pterodactyl Panel (Coming Soon)${NC}"
+            echo -e "  ${YELLOW}[C]${NC} ${WHITE}Back to Main Menu${NC}"
+            echo ""
+            echo -e "${CYAN}═══════════════════════════════${NC}"
+            echo ""
+            read -p "  Select Panel => " panel
+
+            case $panel in                A|a)
+                    install_unofficial_panel
+                    ;;
+                B|b)
+                    clear
+                    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+                    echo -e "${WHITE}       Pterodactyl Panel${NC}"
+                    echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+                    echo ""
+                    echo -e "${YELLOW}[!] This feature is under development${NC}"
+                    echo -e "${CYAN}[*] Expected release: Next update${NC}"
+                    echo ""
+                    read -p "  Press Enter to continue..."
+                    ;;
+                C|c)
+                    continue
+                    ;;
+                *)
+                    echo ""
+                    echo -e "${RED}[✗] Invalid Option!${NC}"
+                    sleep 1
+                    ;;
+            esac
+            ;;
+
+        2)
+            clear
+            echo -e "${CYAN}═══════════════════════════════${NC}"
+            echo -e "${WHITE}         SYSTEM INFO${NC}"
+            echo -e "${CYAN}═══════════════════════════════${NC}"
+            echo ""
+            echo -e "${GREEN}OS:${NC} $(lsb_release -ds 2>/dev/null || cat /etc/*release 2>/dev/null | head -n1)"
+            echo -e "${GREEN}Kernel:${NC} $(uname -r)"
+            echo -e "${GREEN}Uptime:${NC} $(uptime -p 2>/dev/null || uptime)"
+            echo -e "${GREEN}Memory Usage:${NC} $(free -h | awk '/^Mem:/ {print $3 "/" $2}')"
+            echo -e "${GREEN}Disk Usage:${NC} $(df -h / | awk 'NR==2 {print $3 "/" $2}')"
+            echo ""
+            read -p "  Press Enter to continue..."
+            ;;
+
+        3)
+            clear
+            echo -e "${MAGENTA}"
+            cat << 'EOF'
+██████╗ ██████╗  █████╗ ████████╗██╗██╗  ██╗
+██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██║██║ ██╔╝
+██████╔╝██████╔╝███████║   ██║   ██║█████╔╝
+██╔═══╝ ██╔══██╗██╔══██║   ██║   ██║██╔═██╗
+██║     ██║  ██║██║  ██║   ██║   ██║██║  ██╗
+╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝╚═╝  ╚═╝EOF
+            echo ""
+            echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+            echo -e "${GREEN}          Thank You for using!${NC}"
+            echo -e "${MAGENTA}════════════════════════════════════════════${NC}"
+            echo ""
+            echo -e "${CYAN}        See you next time, Pratik!${NC}"
+            echo ""
+            echo -e "${WHITE}Exiting...${NC}"
+            sleep 1
+            exit 0
+            ;;
+
+        *)
+            echo ""
+            echo -e "${RED}[✗] Invalid Option!${NC}"
+            sleep 1
+            ;;
+    esac
+doneecho -e "${WHITE}       ${BOLD}ACCESS REQUIRED${NC}"
 echo -e "${CYAN}═══════════════════════════════${NC}"
 echo ""
 
