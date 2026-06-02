@@ -43,3 +43,140 @@ else
 fi
 
 echo -e "${GREEN}Welcome to PRATIK EXTRAS V7.0${NC}"
+echo ""
+echo -e "${CYAN}═══════════════════════════════${NC}"
+echo -e "${WHITE}           MAIN MENU${NC}"
+echo -e "${CYAN}═══════════════════════════════${NC}"
+
+echo ""
+echo -e "${YELLOW}[1] Panels${NC}"
+echo -e "${YELLOW}[2] Install Java 21${NC}"
+echo -e "${YELLOW}[3] Install Cloudflared${NC}"
+echo -e "${YELLOW}[4] Optional Packages${NC}"
+echo -e "${YELLOW}[5] Exit${NC}"
+echo ""
+
+read -p "Select => " option
+
+case $option in
+
+1)
+    clear
+
+    echo -e "${CYAN}═══════════════════════════════${NC}"
+    echo -e "${WHITE}            PANELS${NC}"
+    echo -e "${CYAN}═══════════════════════════════${NC}"
+
+    echo ""
+    echo "[A] UnOfficial Panel"
+    echo "[B] Pterodactyl"
+    echo ""
+
+    read -p "Select => " panel
+
+    case $panel in
+
+    A|a)
+        echo ""
+        echo -e "${CYAN}[+] Updating System...${NC}"
+        apt update -y
+
+        echo -e "${CYAN}[+] Installing Dependencies...${NC}"
+        apt install git nodejs npm curl wget -y
+
+        echo -e "${CYAN}[+] Downloading Panel...${NC}"
+        git clone https://github.com/pratikgamer11/crispy-adventure
+
+        cd crispy-adventure || exit
+
+        echo -e "${CYAN}[+] Installing NPM Packages...${NC}"
+        npm install express
+
+        echo -e "${GREEN}[✓] Installation Completed!${NC}"
+        echo -e "${GREEN}[✓] Starting Panel...${NC}"
+
+        node .
+        ;;
+
+    B|b)
+        echo ""
+        echo -e "${CYAN}═══════════════════════════════${NC}"
+        echo -e "${WHITE}         PTERODACTYL${NC}"
+        echo -e "${CYAN}═══════════════════════════════${NC}"
+
+        echo ""
+        echo "[1] Install Panel"
+        echo "[2] Install Wings"
+        echo "[3] Install MariaDB"
+        echo "[4] Back"
+        echo ""
+
+        read -p "Select => " ptero
+
+        case $ptero in
+
+        1)
+            echo "Pterodactyl Panel Installer Coming Soon..."
+            ;;
+
+        2)
+            echo "Pterodactyl Wings Installer Coming Soon..."
+            ;;
+
+        3)
+            echo "MariaDB Installer Coming Soon..."
+            ;;
+
+        4)
+            exit
+            ;;
+
+        *)
+            echo "Invalid Option!"
+            ;;
+        esac
+        ;;
+
+    *)
+        echo "Invalid Option!"
+        ;;
+    esac
+    ;;
+
+2)
+    wget -q https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.deb
+    dpkg -i jdk-21_linux-x64_bin.deb
+    java -version
+    ;;
+
+3)
+    dpkg --configure -a
+    apt install -f -y
+
+    mkdir -p --mode=0755 /usr/share/keyrings
+
+    curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | \
+    gpg --dearmor -o /usr/share/keyrings/cloudflare-main.gpg
+
+    echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' | \
+    tee /etc/apt/sources.list.d/cloudflared.list
+
+    apt update -y
+    apt install -y cloudflared
+
+    cloudflared --version
+    ;;
+
+4)
+    echo "Optional Packages Coming Soon..."
+    ;;
+
+5)
+    echo "Goodbye!"
+    exit 0
+    ;;
+
+*)
+    echo "Invalid Option!"
+    ;;
+esac
